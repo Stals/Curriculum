@@ -40,8 +40,8 @@ void MainWindow::on_pushButton_clicked()
 {    
     Curriculum currciculum(L"название.xls");
 
-    //std::wstring cellText = currciculum.getCellString(1,6,1);
-    //ui->label->setText(QString::fromStdWString(cellText));
+    std::wstring cellText = currciculum.getCellString(1,6,1);
+    ui->label->setText(QString::fromStdWString(cellText));
 
 }
 

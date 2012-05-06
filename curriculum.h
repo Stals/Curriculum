@@ -18,7 +18,6 @@ using namespace ExcelFormat;
 class Curriculum{ // Учебный план
 public:
 	Curriculum(wchar_t* filename);
-    ~Curriculum();
 
     // Возвращяет текст ячейки, если там не текст - возвращает пустую строку
     // sheetNum - номер листа в xls файле с которого нужно получить информаци
@@ -36,8 +35,8 @@ private:
 	// хранит файл учебного плана
 	BasicExcel xls; 
 	// Хранит листы учебного плана
-	BasicExcelWorksheet* sheet0;
-	BasicExcelWorksheet* sheet1;
+    BasicExcelWorksheet* sheet0;
+    BasicExcelWorksheet* sheet1;
 };
 
 #endif

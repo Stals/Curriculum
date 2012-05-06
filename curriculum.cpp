@@ -7,13 +7,9 @@ Curriculum::Curriculum(wchar_t* filename){
 }
 
 
-Curriculum::~Curriculum(){
-
-}
-
 std::wstring Curriculum::getCellString(int sheetNum, int row, int col){
-	BasicExcelWorksheet* selectedSheet = (sheetNum == 0)? sheet0 : sheet1; 
-	BasicExcelCell* cell = selectedSheet->Cell(row, col);
+    BasicExcelWorksheet* selectedSheet = (sheetNum == 0)? sheet0 : sheet1;
+    BasicExcelCell* cell = selectedSheet->Cell(row, col);
     const wchar_t* cellText = cell->GetWString();
 
     if(cellText == NULL)
@@ -25,8 +21,8 @@ std::wstring Curriculum::getCellString(int sheetNum, int row, int col){
 
 
 int Curriculum::getCellInt(int sheetNum, int row, int col){
-	BasicExcelWorksheet* selectedSheet = (sheetNum == 0)? sheet0 : sheet1; 
-	BasicExcelCell* cell = selectedSheet->Cell(row, col);
+    BasicExcelWorksheet* selectedSheet = (sheetNum == 0)? sheet0 : sheet1;
+    BasicExcelCell* cell = selectedSheet->Cell(row, col);
 	int cellInt = cell->GetInteger();
 	return cellInt;
 }
