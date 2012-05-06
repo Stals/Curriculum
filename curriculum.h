@@ -18,10 +18,18 @@ using namespace ExcelFormat;
 class Curriculum{ // Учебный план
 public:
 	Curriculum(wchar_t* filename);
+    ~Curriculum();
 
-	// returns cell text, if there is no text - returns empty wstring
+    // Возвращяет текст ячейки, если там не текст - возвращает пустую строку
+    // sheetNum - номер листа в xls файле с которого нужно получить информаци
+    // row - строка
+    // col - столбец
 	std::wstring getCellString(int sheetNum, int row, int col);
-	// returns itn from the cell else - returns 0 if there is not an int 
+
+    // возвращает число из ячейки, если там нет числа - возвращает 0
+    // sheetNum - номер листа в xls файле с которого нужно получить информаци
+    // row - строка
+    // col - столбец
 	int getCellInt(int sheetNum, int row, int col);
 
 private:

@@ -1,9 +1,7 @@
 #include "mainwindow.h"
-
 #include "ui_mainwindow.h"
-#include "ExcelFormat.h"
 
-using namespace ExcelFormat;
+#include "curriculum.h"
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -39,25 +37,11 @@ MainWindow::~MainWindow()
 // В диплом: храним  в wstring, чтобы потом вывести на форму. Почему нельзя в std::string? потому что станет ASCII, а нам нужнен unicode
 
 void MainWindow::on_pushButton_clicked()
-{
-    //const char* filename = "example.xls";
-    BasicExcel xls;
-    xls.Load(L"название.xls");
+{    
+    Curriculum currciculum(L"название.xls");
 
-    //XLSFormatManager fmt_mgr(xls);
-    BasicExcelWorksheet* sheet = xls.GetWorksheet(1); // from second sheet
-
-    int row = 5;
-    int col = 1;
-    BasicExcelCell* cell = sheet->Cell(row, col);
-
-
-    const wchar_t* cellText = cell->GetWString(); // getInteger соответственно возвращает int
-    std::wstring cellString = cellText;
-    ui->label->setText(QString::fromStdWString(cellString));
-
-    //int cellInt = cell->GetInteger();
-    //ui->label->setText(QString::number(cellInt));
+    //std::wstring cellText = currciculum.getCellString(1,6,1);
+    //ui->label->setText(QString::fromStdWString(cellText));
 
 }
 
