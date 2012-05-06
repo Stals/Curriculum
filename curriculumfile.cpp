@@ -23,6 +23,16 @@ std::wstring CurriculumFile::getCellString(int sheetNum, int row, int col){
 int CurriculumFile::getCellInt(int sheetNum, int row, int col){
     BasicExcelWorksheet* selectedSheet = (sheetNum == 0)? sheet0 : sheet1;
     BasicExcelCell* cell = selectedSheet->Cell(row, col);
-	int cellInt = cell->GetInteger();
-	return cellInt;
+    int cellInt = cell->GetInteger();
+    return cellInt;
 }
+
+bool CurriculumFile::isEmpty(int sheetNum, int row, int col){
+    bool isEmpty = (getCellString(sheetNum, row, col).empty() && (getCellInt(sheetNum, row, col) == 0) );
+    if(isEmpty)
+        return true;
+    else
+        return false;
+
+}
+

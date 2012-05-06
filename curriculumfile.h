@@ -29,6 +29,7 @@ public:
     // row - строка
     // col - столбец
 	int getCellInt(int sheetNum, int row, int col);
+    bool isEmpty(int sheetNum, int row,int col);
 
 private:
 	// хранит файл учебного плана

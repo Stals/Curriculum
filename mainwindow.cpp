@@ -38,10 +38,13 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_pushButton_clicked()
 {    
-    CurriculumFile currciculumFile(L"название.xls");
+    CurriculumFile curriculumFile(L"название.xls");
 
-    std::wstring cellText = currciculumFile.getCellString(1,6,1);
+    std::wstring cellText = curriculumFile.getCellString(1,6,0);
     ui->label->setText(QString::fromStdWString(cellText));
+
+    //int cellInt = currciculumFile.getCellInt(1,6,0);
+    //ui->label->setText(QString::number(cellInt));
 
 }
 
