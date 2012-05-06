@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include "curriculum.h"
+#include "curriculumfile.h"
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -38,9 +38,9 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_pushButton_clicked()
 {    
-    Curriculum currciculum(L"название.xls");
+    CurriculumFile currciculumFile(L"название.xls");
 
-    std::wstring cellText = currciculum.getCellString(1,6,1);
+    std::wstring cellText = currciculumFile.getCellString(1,6,1);
     ui->label->setText(QString::fromStdWString(cellText));
 
 }

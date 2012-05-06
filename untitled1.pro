@@ -14,11 +14,11 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     ExcelFormat.cpp \
     BasicExcel.cpp \
-    curriculum.cpp
+    curriculumfile.cpp
 
 HEADERS  += mainwindow.h \
     ExcelFormat.h \
     BasicExcel.hpp \
-    curriculum.h
+    curriculumfile.h
 
 FORMS    += mainwindow.ui
