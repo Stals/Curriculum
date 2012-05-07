@@ -23,14 +23,15 @@ public:
     // row - строка
     // col - столбец
 	std::wstring getCellString(int sheetNum, int row, int col);
-
+    std::string getCellStdString(int sheetNum, int row, int col);
     // возвращает число из ячейки, если там нет числа - возвращает 0
     // sheetNum - номер листа в xls файле с которого нужно получить информаци
     // row - строка
     // col - столбец
 	int getCellInt(int sheetNum, int row, int col);
     bool isEmpty(int sheetNum, int row,int col);
-
+    int getTotalRows(int sheetNum);
+    size_t getStringLength(int sheetNum, int row, int col);
 private:
 	// хранит файл учебного плана
 	BasicExcel xls; 

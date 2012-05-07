@@ -18,6 +18,16 @@ std::wstring CurriculumFile::getCellString(int sheetNum, int row, int col){
         return cellText; // convertint to wstring
 
 }
+std::string CurriculumFile::getCellStdString(int sheetNum, int row, int col){
+    BasicExcelWorksheet* selectedSheet = (sheetNum == 0)? sheet0 : sheet1;
+    BasicExcelCell* cell = selectedSheet->Cell(row, col);
+    const char* cellText = cell->GetString();
+
+    if(cellText == NULL)
+        return ""; // return empty string
+    else
+        return cellText; // convertint to stdstring
+}
 
 
 int CurriculumFile::getCellInt(int sheetNum, int row, int col){
@@ -34,5 +44,17 @@ bool CurriculumFile::isEmpty(int sheetNum, int row, int col){
     else
         return false;
 
+}
+
+
+int CurriculumFile::getTotalRows(int sheetNum){
+    BasicExcelWorksheet* selectedSheet = (sheetNum == 0)? sheet0 : sheet1;
+    return selectedSheet->GetTotalRows();
+}
+
+size_t CurriculumFile::getStringLength(int sheetNum, int row, int col){
+    BasicExcelWorksheet* selectedSheet = (sheetNum == 0)? sheet0 : sheet1;
+    BasicExcelCell* cell = selectedSheet->Cell(row, col);
+    return cell->GetStringLength();
 }
 

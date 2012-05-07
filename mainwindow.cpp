@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include "curriculumfile.h"
+#include "curriculum.h"
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -16,19 +16,6 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-//std::wstring getCellString(int row, int col){
-//   BasicExcelCell* cell = sheet->Cell(row, col);
-//   const wchar_t* cellText = cell->GetWString();
-//   std::wstring result = cellText; //convert to wstring
-//   return result;
-//}
-
-//int getCellInt(int row, int col){
-//    BasicExcelCell* cell = sheet->Cell(row, col);
-//    int cellInt = cell->GetInteger();
-//    return cellInt;
-//}
-
 // И при этом храним sheet внутри класса (он созддается в конструкторе)
 // Вообщем мне нужнен класс который будет общаться с excelFormat
 // и 2ой который мне в программу просто выдаст готовый список занятий
@@ -38,10 +25,20 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_pushButton_clicked()
 {    
-    CurriculumFile curriculumFile(L"название.xls");
+    //TODO проверить насколько щас работает curriculum
 
-    std::wstring cellText = curriculumFile.getCellString(1,6,0);
-    ui->label->setText(QString::fromStdWString(cellText));
+    Curriculum curriculum(1, L"название.xls");
+    ui->label->setText("so far so good");
+    //TODO Определять факультатив, а его предметы как обычные предметы
+
+    //TODO как сделать хранение - в заметках на ipad.
+    //TODO перенести текст отсуда куда нада (в диплом часть можно)
+    //TODO нарисовать архитектуру для диплома (и нада будет описать наверно)
+
+//    CurriculumFile curriculumFile(L"название.xls");
+
+//    std::wstring cellText = curriculumFile.getCellString(1,6,0);
+//    ui->label->setText(QString::fromStdWString(cellText));
 
     //int cellInt = currciculumFile.getCellInt(1,6,0);
     //ui->label->setText(QString::number(cellInt));
