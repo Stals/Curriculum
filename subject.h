@@ -18,6 +18,16 @@ struct Semester{
 
 	Semester():lectureHours(0), labWorkHours(0), practiceHours(0), independentWorkHours(0),
 	 test(false), exam(false), yearWork(false){}
+
+    // Возвращает true, если в этом семестре эта дисциплина не проводистся
+    bool isEmpty(){
+        int totalHours = lectureHours + labWorkHours + practiceHours + independentWorkHours;
+        bool attestation = exam || test || yearWork;
+        // Если Общее время для это семестра = 0 и отсутствуют аттестации
+        if(totalHours == 0 && !attestation)
+            return true;
+        else return false;
+    }
 };
 
 struct Subject{
@@ -42,6 +52,13 @@ struct Subject{
 	bool computerClassNecessary; // необходима ли компьютерная аудитория
 	bool projectorNecessary; // необходим ли проектор 
 	// teacherName or mb id ? 
+
+    // Возвращает true если ни в одном из семестров (на этом курсе) эта дисциплина не проводится
+    bool isEmpty(){
+        if(firstSemester.isEmpty() && secondSemester.isEmpty())
+            return true;
+        else return false;
+    }
 };
 // example
 // Subject subject;

@@ -21,6 +21,8 @@ HEADERS  += mainwindow.h \
     ExcelFormat.h \
     BasicExcel.hpp \
     curriculumfile.h \
-    curriculum.h
+    curriculum.h \
+    subject.h \
+    cycle.h
 
 FORMS    += mainwindow.ui

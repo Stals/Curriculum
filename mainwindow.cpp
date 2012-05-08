@@ -25,7 +25,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_pushButton_clicked()
 {    
-    Curriculum curriculum(1, L"название.xls");
+    Curriculum curriculum(2, L"название.xls");
     QString subjects = "";
     for(std::vector<Cycle>::iterator it = curriculum.cycles.begin(); it!= curriculum.cycles.end(); ++it){
         for(int i = 0; i < it->subjects.size(); ++i)

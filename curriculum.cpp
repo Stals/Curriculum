@@ -26,24 +26,28 @@ void Curriculum::loadCurriculumSubjects(){
                 cycles.push_back(cycle);
                 break;
             }
-            case RowType::subject:
+           case RowType::subject:{
                 // Добавим новый предмет в список обязательных дисциплин текущего цикла
                 std::cout<<row+1<<" subject"<<std::endl;
-                cycles.back().subjects.push_back( getSubject(row) );
+                Subject subject = getSubject(row);
+                if(!subject.isEmpty())
+                    cycles.back().subjects.push_back( subject );
                 break;
-
+            }
             case RowType::subSubjectNumber:
                 // Получим имя новых дисциплин по выбору
                 std::cout<<row+1<<" subSubjectNumber"<<std::endl;
                 currentSubSubjectNumber = getSubSubjectNumber(row);
                 break;
 
-            case RowType::subSubject: 
+            case RowType::subSubject:{
                 // Добавим новый предмет по выбору в список дисциплин по выбору текущего цикла
                 std::cout<<row+1<<" subSubject"<<std::endl;
-                cycles.back().subSubjects.push_back( getSubject(row, currentSubSubjectNumber) );
+                Subject subSubject = getSubject(row, currentSubSubjectNumber);
+                if(!subSubject.isEmpty())
+                    cycles.back().subSubjects.push_back( subSubject );
                 break;
-
+            }
             case RowType::unknown:
                 std::cout<<row+1<<" unknown"<<std::endl;
                 break;

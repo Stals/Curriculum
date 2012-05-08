@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
+    <width>661</width>
     <height>668</height>
    </rect>
   </property>
@@ -46,13 +46,76 @@
      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
     </property>
    </widget>
+   <widget class="QTreeWidget" name="treeWidget">
+    <property name="geometry">
+     <rect>
+      <x>330</x>
+      <y>80</y>
+      <width>256</width>
+      <height>491</height>
+     </rect>
+    </property>
+    <property name="animated">
+     <bool>true</bool>
+    </property>
+    <property name="headerHidden">
+     <bool>false</bool>
+    </property>
+    <column>
+     <property name="text">
+      <string>Циклы дисциплин</string>
+     </property>
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+    </column>
+    <item>
+     <property name="text">
+      <string>ГСЭ</string>
+     </property>
+     <item>
+      <property name="text">
+       <string>Основыне</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>ДСЭ1 По выбору</string>
+      </property>
+      <item>
+       <property name="text">
+        <string>номер 1</string>
+       </property>
+       <property name="checkState">
+        <enum>Unchecked</enum>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>номер 2</string>
+       </property>
+       <property name="checkState">
+        <enum>Unchecked</enum>
+       </property>
+      </item>
+     </item>
+    </item>
+    <item>
+     <property name="text">
+      <string>МЭП</string>
+     </property>
+    </item>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>400</width>
+     <width>661</width>
      <height>21</height>
     </rect>
    </property>
