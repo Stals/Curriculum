@@ -17,6 +17,7 @@ public:
     
 private slots:
     void on_pushButton_clicked();
+    void addSubjectsToTree(int year);
 
 private:
     Ui::MainWindow *ui;

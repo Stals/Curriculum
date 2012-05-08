@@ -16,5 +16,10 @@ struct Cycle{
 	
 	Cycle(){}
 	Cycle(CycleName cycleName): name(cycleName){}
+    bool isEmpty(){
+        if(subjects.empty() && subSubjects.empty())
+            return true;
+        else return false;
+    }
 };
 #endif

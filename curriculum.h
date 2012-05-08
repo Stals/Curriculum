@@ -52,6 +52,8 @@ private:
     // Проверяет входит ли semesterNum в список тех семестров для которых есть аттестация в строке listOfSemesters
     bool isSemesterInList(int year, int semesterNum, std::string listOfSemesters);
 
+    // Удаляет пусты циклы из cycles
+    void removeEmptyCycles();
     //TODO Тут еще нужен метод который будет получать то что нужно с первого листа.
 
 	//TODO! Можно сделать метод который будет добавлять все под дисциплины после указанной строки,

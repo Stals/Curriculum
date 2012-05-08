@@ -4,6 +4,8 @@ Curriculum::Curriculum(int year, wchar_t* filename): xls(filename){
 	this->year = year;
 	// Заполняем subjects содержимым xls
     loadCurriculumSubjects();
+    // удалим пустые циклы
+    removeEmptyCycles();
 }
 
 //Загружает дисциплины из учебного плана "Лист 2"
@@ -181,5 +183,15 @@ bool Curriculum::isSemesterInList(int year, int semesterNum, std::string listOfS
          return true;
      else return false;
 
+}
+
+void Curriculum::removeEmptyCycles(){
+    std::vector<Cycle>::iterator cycle = cycles.begin();
+    while(cycle != cycles.end()){
+        if(cycle->isEmpty())
+            cycle = cycles.erase(cycle);
+        else
+            ++cycle;
+    }
 }
 
