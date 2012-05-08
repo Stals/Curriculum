@@ -5,25 +5,25 @@
 
 #ifndef CURRICULUM_H
 #define CURRICULUM_H
+#include <vector>
 
 #include "curriculumfile.h"
-//TODO uncomment after first test
-//#include "cycle.h"
+#include "cycle.h"
 #include "subject.h"
 
 class Curriculum{ //TODO ASAP - если я храню только для одного курса- сюда нужно передавать № курса для которого будут доставаться предметы.
 public:
 	Curriculum(int year, wchar_t* filename);
 
-    // Хранит список предметов из учебного плана.
-	std::vector<Subject> subjects; //TODOmb поменять на private, если будет необходимость сделать специфичные методы доступа. (типа получить список предметов только для определенного цикла или получить список циклов. и тп.) 
+    // Хранит список циклов из учебного плана (Которые в свою очередь хранят список дисциплин в них входящий).
+    std::vector<Cycle> cycles; //TODOmb поменять на private, если будет необходимость сделать специфичные методы доступа. (типа получить список предметов только для определенного цикла или получить список циклов. и тп.)
 private:
     struct RowType {
         enum Value {
             cycle,				// цикл предметов
             subject, 			// дисциплина
-            subSubject, 		// дисциплина по выбору
             subSubjectNumber, 	// номер дисциплины по выбору (например ГСЭ.В1)
+            subSubject,         // дисциплина по выбору
             unknown 			// не одна из выше перечисленных
         };
     };
@@ -34,12 +34,17 @@ private:
 	// TODO Question - Хранить сразу для всех курсов или только для 1ого? - мне кажется для 1ого хранить понятнее (и не будет путаницы)
 	// TODO Question - как хранить subjects? можно сделать map с ключами - циклами, а value - 2 контейнера (для обязательных и дополнительных дисциплин)
 
-	// Сохраняет Все дисциплины в subjects
-	void getSubjects();
+    //Загружает дисциплины из учебного плана "Лист 2"
+	void loadCurriculumSubjects();
 
-	// Добавляет предмет со строки row в subjects
-	// При добавлении дополнительной дисциплины нужно передать её номер 
-	void getSubject(int row, std::wstring titleNumber = L"");
+	// Возращет предмет со строки row
+	// При добавлении дисциплины по выбору нужно передать её номер 
+    Subject getSubject(int row, std::wstring titleNumber = L"");
+
+    CycleName getCycleName(int row);
+
+    std::wstring getSubSubjectNumber(int row);
+
 
 	// Возвращает RowType в зависимости от того чем является строка
     RowType::Value getRowType(int row);

@@ -25,11 +25,13 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_pushButton_clicked()
 {    
-    //TODO проверить насколько щас работает curriculum
-    //TODO rename get Subjects to getCurriculumFromFile
-
     Curriculum curriculum(1, L"название.xls");
-    ui->label->setText("so far so good");
+    QString subjects = "";
+    for(std::vector<Cycle>::iterator it = curriculum.cycles.begin(); it!= curriculum.cycles.end(); ++it){
+        for(int i = 0; i < it->subjects.size(); ++i)
+            subjects = subjects + QString::fromStdWString(it->subjects[i].title)+"\n";
+    }
+    ui->label->setText(subjects);
     //TODO Определять факультатив, а его предметы как обычные предметы
 
     //TODO как сделать хранение - в заметках на ipad.

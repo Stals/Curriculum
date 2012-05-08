@@ -3,30 +3,47 @@
 Curriculum::Curriculum(int year, wchar_t* filename): xls(filename){
 	this->year = year;
 	// Заполняем subjects содержимым xls
-	getSubjects();
+    loadCurriculumSubjects();
 }
 
-
-// Сохраняет Все дисциплины в subjects
-void Curriculum::getSubjects(){
-	//Наверно тут я определяю какая строка является строкой предмета после чего говорю её прочитать в другой метод.
+//Загружает дисциплины из учебного плана "Лист 2"
+void Curriculum::loadCurriculumSubjects(){
+    CycleName currentCycleName; // имя текущего цикла
+    std::wstring currentSubSubjectNumber; // номер текущих дисциплин по выбору
+	
+    // Для каждой строки в файле - определим какой тип она имеет и выполним соответствующие дейстия
     int startFrom = 2; // Чтобы строка "|№|Название дисциплины|" - не считалась дисциплиной
     for(int row = startFrom; row < xls.getTotalRows(1); ++row){
+
         RowType::Value rowType = getRowType(row);
         switch ( rowType ) {
-            case RowType::cycle:
+
+            case RowType::cycle:{
+                // Получим имя нового цикла и добавим его в cycles
                 std::cout<<row+1<<" cycle"<<std::endl;
+                currentCycleName = getCycleName(row);
+                Cycle cycle(currentCycleName);
+                cycles.push_back(cycle);
                 break;
+            }
             case RowType::subject:
-                getSubject(row);
+                // Добавим новый предмет в список обязательных дисциплин текущего цикла
                 std::cout<<row+1<<" subject"<<std::endl;
+                cycles.back().subjects.push_back( getSubject(row) );
                 break;
-            case RowType::subSubject: //TODO В subsubject нужно передавать номер дисциплины по выбору.
-                std::cout<<row+1<<" subSubject"<<std::endl;
-                break;
+
             case RowType::subSubjectNumber:
+                // Получим имя новых дисциплин по выбору
                 std::cout<<row+1<<" subSubjectNumber"<<std::endl;
+                currentSubSubjectNumber = getSubSubjectNumber(row);
                 break;
+
+            case RowType::subSubject: 
+                // Добавим новый предмет по выбору в список дисциплин по выбору текущего цикла
+                std::cout<<row+1<<" subSubject"<<std::endl;
+                cycles.back().subSubjects.push_back( getSubject(row, currentSubSubjectNumber) );
+                break;
+
             case RowType::unknown:
                 std::cout<<row+1<<" unknown"<<std::endl;
                 break;
@@ -36,7 +53,7 @@ void Curriculum::getSubjects(){
 
 
 // Добавляет предмет со строки row в subjects
-void Curriculum::getSubject(int row, std::wstring titleNumber){
+Subject Curriculum::getSubject(int row, std::wstring titleNumber){
 
 // Нужно сделать список с цифравми столбцов где находится каждое число.
 // Предметы должны доставаться только если они для этого курса.	
@@ -69,9 +86,9 @@ void Curriculum::getSubject(int row, std::wstring titleNumber){
     subject.firstSemester.practiceHours =         xls.isEmpty(1, row, ++firstCol) ? 0 : xls.getCellInt(1, row, firstCol);
     subject.firstSemester.independentWorkHours =  xls.isEmpty(1, row, ++firstCol) ? 0 : xls.getCellInt(1, row, firstCol);
 
-    subject.secondSemester.lectureHours =       xls.isEmpty(1, row, ++firstCol) ? 0 : xls.getCellInt(1, row, firstCol);
-    subject.secondSemester.labWorkHours =       xls.isEmpty(1, row, ++firstCol) ? 0 : xls.getCellInt(1, row, firstCol);
-    subject.secondSemester.practiceHours =      xls.isEmpty(1, row, ++firstCol) ? 0 : xls.getCellInt(1, row, firstCol);
+    subject.secondSemester.lectureHours =         xls.isEmpty(1, row, ++firstCol) ? 0 : xls.getCellInt(1, row, firstCol);
+    subject.secondSemester.labWorkHours =         xls.isEmpty(1, row, ++firstCol) ? 0 : xls.getCellInt(1, row, firstCol);
+    subject.secondSemester.practiceHours =        xls.isEmpty(1, row, ++firstCol) ? 0 : xls.getCellInt(1, row, firstCol);
     subject.secondSemester.independentWorkHours = xls.isEmpty(1, row, ++firstCol) ? 0 : xls.getCellInt(1, row, firstCol);
 
     // Получим информацию о наличии итоговой аттестации
@@ -84,11 +101,31 @@ void Curriculum::getSubject(int row, std::wstring titleNumber){
     subject.secondSemester.test =       isSemesterInList(year, 2, xls.getCellStdString(1,row, 3));
     subject.secondSemester.yearWork =   isSemesterInList(year, 2, xls.getCellStdString(1,row, 4));
 
-    subjects.push_back(subject);
+    return subject;
 }
 
 //TODO - если мы получили дисциплину по выбору - то нам всеравно нужно получить её номер (например ГСЭ.В1)
 //Когда я получаю cycle - нужно добавлять в новый key map'a, и наверно сделать что-то похожее если началися под дисциплины.
+
+
+ CycleName Curriculum::getCycleName(int row){
+    CycleName cycleName;
+    cycleName.shortName = xls.getCellWString(1, row, 1);
+    cycleName.fullName = xls.getCellWString(1, row, 2);
+    return cycleName;
+ }
+
+ std::wstring Curriculum::getSubSubjectNumber(int row){
+    std::wstring str = xls.getCellWString(1, row, 1);
+    std::wstring::iterator it = str.begin();
+    for(; it!= str.end(); ++it){
+        if((*it) == L' ')
+            break;
+    }
+
+    return std::wstring(str.begin(),it);
+ }
+
 
 
 // Возвращает RowType в зависимости от того чем является строка
