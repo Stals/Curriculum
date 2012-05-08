@@ -9,14 +9,14 @@
 #include "curriculumfile.h"
 //TODO uncomment after first test
 //#include "cycle.h"
-//#include "subject.h"
+#include "subject.h"
 
 class Curriculum{ //TODO ASAP - если я храню только для одного курса- сюда нужно передавать № курса для которого будут доставаться предметы.
 public:
 	Curriculum(int year, wchar_t* filename);
 
     // Хранит список предметов из учебного плана.
-	//std::vector<Subject> subjects; //TODOmb поменять на private, если будет необходимость сделать специфичные методы доступа. (типа получить список предметов только для определенного цикла или получить список циклов. и тп.) 
+	std::vector<Subject> subjects; //TODOmb поменять на private, если будет необходимость сделать специфичные методы доступа. (типа получить список предметов только для определенного цикла или получить список циклов. и тп.) 
 private:
     struct RowType {
         enum Value {
@@ -38,10 +38,14 @@ private:
 	void getSubjects();
 
 	// Добавляет предмет со строки row в subjects
-	void getSubject(int row);
+	// При добавлении дополнительной дисциплины нужно передать её номер 
+	void getSubject(int row, std::wstring titleNumber = L"");
 
 	// Возвращает RowType в зависимости от того чем является строка
     RowType::Value getRowType(int row);
+
+    // Проверяет входит ли semesterNum в список тех семестров для которых есть аттестация в строке listOfSemesters
+    bool isSemesterInList(int year, int semesterNum, std::string listOfSemesters);
 
     //TODO Тут еще нужен метод который будет получать то что нужно с первого листа.
 

@@ -7,7 +7,7 @@ CurriculumFile::CurriculumFile(wchar_t* filename){
 }
 
 
-std::wstring CurriculumFile::getCellString(int sheetNum, int row, int col){
+std::wstring CurriculumFile::getCellWString(int sheetNum, int row, int col){
     BasicExcelWorksheet* selectedSheet = (sheetNum == 0)? sheet0 : sheet1;
     BasicExcelCell* cell = selectedSheet->Cell(row, col);
     const wchar_t* cellText = cell->GetWString();
@@ -38,7 +38,7 @@ int CurriculumFile::getCellInt(int sheetNum, int row, int col){
 }
 
 bool CurriculumFile::isEmpty(int sheetNum, int row, int col){
-    bool isEmpty = (getCellString(sheetNum, row, col).empty() && (getCellInt(sheetNum, row, col) == 0) );
+    bool isEmpty = (getCellWString(sheetNum, row, col).empty() && (getCellInt(sheetNum, row, col) == 0) );
     if(isEmpty)
         return true;
     else

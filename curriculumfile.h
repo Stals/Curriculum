@@ -22,7 +22,7 @@ public:
     // sheetNum - номер листа в xls файле с которого нужно получить информаци
     // row - строка
     // col - столбец
-	std::wstring getCellString(int sheetNum, int row, int col);
+	std::wstring getCellWString(int sheetNum, int row, int col);
     std::string getCellStdString(int sheetNum, int row, int col);
     // возвращает число из ячейки, если там нет числа - возвращает 0
     // sheetNum - номер листа в xls файле с которого нужно получить информаци

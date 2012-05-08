@@ -26,6 +26,7 @@ MainWindow::~MainWindow()
 void MainWindow::on_pushButton_clicked()
 {    
     //TODO проверить насколько щас работает curriculum
+    //TODO rename get Subjects to getCurriculumFromFile
 
     Curriculum curriculum(1, L"название.xls");
     ui->label->setText("so far so good");
