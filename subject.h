@@ -60,11 +60,6 @@ struct Subject{
         else return false;
     }
 };
-// example
-// Subject subject;
-// subject.title = "Разработка и стандартизация";
-// subject.firstSemester.lectureHours = 50; 
-
 
 //Лекций	
 //Лабораторных	
