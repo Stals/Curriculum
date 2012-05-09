@@ -34,6 +34,11 @@
         </font>
        </property>
       </column>
+      <column>
+       <property name="text">
+        <string>id</string>
+       </property>
+      </column>
      </widget>
     </item>
     <item row="1" column="0">

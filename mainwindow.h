@@ -1,5 +1,6 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
+#include "curriculum.h"
 
 #include <QMainWindow>
 
@@ -21,6 +22,7 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    std::vector<Subject *> subjects;
 };
 
 #endif // MAINWINDOW_H
