@@ -51,7 +51,7 @@ struct Subject{
 	/* Информация добавляемая после загрузки Учебного плана */	
 	bool computerClassNecessary; // необходима ли компьютерная аудитория
 	bool projectorNecessary; // необходим ли проектор 
-	// teacherName or mb id ? 
+    std::wstring teacherName; // or mb id ?
 
     // Возвращает true если ни в одном из семестров (на этом курсе) эта дисциплина не проводится
     bool isEmpty(){

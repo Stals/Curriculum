@@ -1,12 +1,10 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-
-
-
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow),
+    firstTime(true)
 {
     ui->setupUi(this);
 }
@@ -19,8 +17,36 @@ MainWindow::~MainWindow()
     this->subjects.clear();
 }
 
+//converts QString to std::wstring
+std::wstring MainWindow::qs2ws(const QString& str){
+    return (std::wstring((wchar_t*)str.unicode(), str.length()));
+}
+
+
+void MainWindow::clearAllEdits(){
+    ui->subjectTitle->clear();
+    ui->teacherName->clear();
+    ui->lectureHours1->clear();
+    ui->lectureHours1->clear();
+    ui->labWorkHours1->clear();
+    ui->labWorkHours1->clear();
+    ui->practiceHours1->clear();
+    ui->practiceHours1->clear();
+    ui->independentWorkHours1->clear();
+    ui->independentWorkHours1->clear();
+    ui->exam1->setChecked(false);
+    ui->exam2->setChecked(false);
+    ui->test1->setChecked(false);
+    ui->test2->setChecked(false);
+    ui->yearWork1->setChecked(false);
+    ui->yearWork2->setChecked(false);
+    ui->computerClassNecessary->setChecked(false);
+    ui->projectorNecessary->setChecked(false);
+}
+
 void MainWindow::addSubjectsToTree(int year){
     //TODO Номер для дисциплин - может столбцы заюзать?
+    //TODO fix булевые комп аудитории и тд
 
     //TODO еще одно под меню для дисциплин по выбору
     // может сделать так чтобы в таблице хранилась ссылка на дисциплину которую какраз можно модифицировать? в 1ом столбце?
@@ -28,8 +54,7 @@ void MainWindow::addSubjectsToTree(int year){
     //Отправить абатурову наверно.
     //TODO добавить возможность редактирования свойств предметов
 
-    Curriculum curriculum(year, L"название.xls");
-    for(std::vector<Cycle>::iterator it = curriculum.cycles.begin(); it!= curriculum.cycles.end(); ++it){
+    for(std::vector<Cycle>::iterator it = curriculum->cycles.begin(); it!= curriculum->cycles.end(); ++it){
         QTreeWidgetItem *cycle = new QTreeWidgetItem(ui->treeWidget);
         QString cycleName = QString::fromStdWString(it->name.shortName) + " - " +
                 QString::fromStdWString(it->name.fullName);
@@ -90,6 +115,8 @@ void MainWindow::on_pushButton_clicked()
 {
     ui->treeWidget->clear();
     this->subjects.clear();
+    clearAllEdits();
+
 
     int year; //# курса
     if(ui->radioButton_1->isChecked()){
@@ -107,6 +134,11 @@ void MainWindow::on_pushButton_clicked()
     if(ui->radioButton_5->isChecked()){
         year = 5;
     }
+
+
+    if(!firstTime)
+        delete curriculum;
+    curriculum = new Curriculum(year, L"название.xls");
     addSubjectsToTree(year);
 }
 
@@ -120,3 +152,72 @@ void MainWindow::on_pushButton_clicked()
     Если слева текст меньше 10 - это доп предмет. А если больше - это начало следущего цикла.
 
 */
+
+void MainWindow::on_treeWidget_itemClicked(QTreeWidgetItem *item, int column)
+{
+    //Нужна проверка на то что это не цикл - нужны именно те поля у которых 2 колонки.
+    int subjectId = (item->text(1)).toInt(); // get subject id
+    //ui->subjectTitle->setText(item->text(1));
+
+    // convert to int
+    Subject* subject = this->subjects[subjectId];
+    // Выведем общую информацию
+    ui->subjectTitle->setText(QString::fromStdWString(subject->title));
+    ui->subjectTitle->home(false); // чтобы название предмета было видно с начала, если оно длинное
+    ui->teacherName->setText(QString::fromStdWString(subject->teacherName));
+    ui->computerClassNecessary->setChecked(subject->computerClassNecessary);
+    ui->projectorNecessary->setChecked(subject->projectorNecessary);
+
+    // Выведем информацию о первом семестре
+    ui->lectureHours1->setText(QString::number(subject->firstSemester.lectureHours));
+    ui->labWorkHours1->setText(QString::number(subject->firstSemester.labWorkHours));
+    ui->practiceHours1->setText(QString::number(subject->firstSemester.practiceHours));
+    ui->independentWorkHours1->setText(QString::number(subject->firstSemester.independentWorkHours));
+    ui->exam1->setChecked(subject->firstSemester.exam);
+    ui->test1->setChecked(subject->firstSemester.test);
+    ui->yearWork1->setChecked(subject->firstSemester.yearWork);
+
+    // Выведем информацию о втором семестре
+    ui->lectureHours2->setText(QString::number(subject->secondSemester.lectureHours));
+    ui->labWorkHours2->setText(QString::number(subject->secondSemester.labWorkHours));
+    ui->practiceHours2->setText(QString::number(subject->secondSemester.practiceHours));
+    ui->independentWorkHours2->setText(QString::number(subject->secondSemester.independentWorkHours));
+    ui->exam2->setChecked(subject->secondSemester.exam);
+    ui->test2->setChecked(subject->secondSemester.test);
+    ui->yearWork2->setChecked(subject->secondSemester.yearWork);
+
+}
+
+void MainWindow::on_pushButton_2_clicked()
+{
+    // Получим выбранный элемент в treeWidget
+    QTreeWidgetItem *selectedItem = ui->treeWidget->selectedItems()[0];
+    //и в него запишем все данные.
+    int subjectId = (selectedItem->text(1)).toInt(); // get subject id
+    Subject* subject = this->subjects[subjectId];
+
+    //Сохраним общую информацию
+    subject->title = qs2ws(ui->subjectTitle->text());
+    subject->teacherName = qs2ws(ui->teacherName->text());
+    subject->computerClassNecessary = ui->computerClassNecessary->isChecked();
+    subject->projectorNecessary = ui->computerClassNecessary->isChecked();
+
+    //Сохраним изменения для первого семестра
+    subject->firstSemester.lectureHours = ui->lectureHours1->text().toInt();
+    subject->firstSemester.labWorkHours = ui->labWorkHours1->text().toInt();
+    subject->firstSemester.practiceHours = ui->practiceHours1->text().toInt();
+    subject->firstSemester.independentWorkHours = ui->independentWorkHours1->text().toInt();
+    subject->firstSemester.exam = ui->exam1->isChecked();
+    subject->firstSemester.test = ui->test1->isChecked();
+    subject->firstSemester.yearWork = ui->yearWork1->isChecked();
+
+    //Сохраним измения для второго семестра
+    subject->secondSemester.lectureHours = ui->lectureHours2->text().toInt();
+    subject->secondSemester.labWorkHours = ui->labWorkHours2->text().toInt();
+    subject->secondSemester.practiceHours = ui->practiceHours2->text().toInt();
+    subject->secondSemester.independentWorkHours = ui->independentWorkHours2->text().toInt();
+    subject->secondSemester.exam = ui->exam2->isChecked();
+    subject->secondSemester.test = ui->test2->isChecked();
+    subject->secondSemester.yearWork = ui->yearWork2->isChecked();
+
+}
