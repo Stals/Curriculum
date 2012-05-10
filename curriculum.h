@@ -6,10 +6,12 @@
 #ifndef CURRICULUM_H
 #define CURRICULUM_H
 #include <vector>
+#include <utility>
 
 #include "curriculumfile.h"
 #include "cycle.h"
 #include "subject.h"
+#include "subsubjects.h"
 
 class Curriculum{ //TODO ASAP - если я храню только для одного курса- сюда нужно передавать № курса для которого будут доставаться предметы.
 public:
@@ -45,6 +47,7 @@ private:
 
     std::wstring getSubSubjectNumber(int row);
 
+    std::pair<double, double> getSubSubjectPercent(int row);
 
 	// Возвращает RowType в зависимости от того чем является строка
     RowType::Value getRowType(int row);
@@ -52,6 +55,7 @@ private:
     // Проверяет входит ли semesterNum в список тех семестров для которых есть аттестация в строке listOfSemesters
     bool isSemesterInList(int year, int semesterNum, std::string listOfSemesters);
 
+    void removeEmptySubSubjects();
     // Удаляет пусты циклы из cycles
     void removeEmptyCycles();
     //TODO Тут еще нужен метод который будет получать то что нужно с первого листа.

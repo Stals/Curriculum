@@ -4,6 +4,8 @@ Curriculum::Curriculum(int year, wchar_t* filename): xls(filename){
 	this->year = year;
 	// Заполняем subjects содержимым xls
     loadCurriculumSubjects();
+    //удалим пустые группы дисциплин по выбору
+    removeEmptySubSubjects();
     // удалим пустые циклы
     removeEmptyCycles();
 }
@@ -40,6 +42,7 @@ void Curriculum::loadCurriculumSubjects(){
                 // Получим имя новых дисциплин по выбору
                 std::cout<<row+1<<" subSubjectNumber"<<std::endl;
                 currentSubSubjectNumber = getSubSubjectNumber(row);
+                cycles.back().subSubjects.push_back(SubSubjects(currentSubSubjectNumber, getSubSubjectPercent(row+8)));
                 break;
 
             case RowType::subSubject:{
@@ -47,7 +50,7 @@ void Curriculum::loadCurriculumSubjects(){
                 std::cout<<row+1<<" subSubject"<<std::endl;
                 Subject subSubject = getSubject(row, currentSubSubjectNumber);
                 if(!subSubject.isEmpty())
-                    cycles.back().subSubjects.push_back( subSubject );
+                    cycles.back().subSubjects.back().subjects.push_back( subSubject );
                 break;
             }
             case RowType::unknown:
@@ -132,7 +135,12 @@ Subject Curriculum::getSubject(int row, std::wstring titleNumber){
     return std::wstring(str.begin(),it);
  }
 
+std::pair<double, double> Curriculum::getSubSubjectPercent(int row){
+//    std::pair <double, double> percents;
+//    percents.first = xls.getDouble(1, );
 
+//    return percents;
+}
 
 // Возвращает RowType в зависимости от того чем является строка
 /* Принчип:
@@ -183,6 +191,18 @@ bool Curriculum::isSemesterInList(int year, int semesterNum, std::string listOfS
          return true;
      else return false;
 
+}
+
+void Curriculum::removeEmptySubSubjects(){
+for(std::vector<Cycle>::iterator cycle = cycles.begin(); cycle != cycles.end(); ++cycle){
+    std::vector<SubSubjects>::iterator subSubjects = cycle->subSubjects.begin();
+    while(subSubjects != cycle->subSubjects.end()){
+        if(subSubjects->isEmpty())
+                subSubjects = cycle->subSubjects.erase(subSubjects);
+            else
+                ++ subSubjects;
+        }
+    }
 }
 
 void Curriculum::removeEmptyCycles(){

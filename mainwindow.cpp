@@ -15,6 +15,7 @@ MainWindow::~MainWindow()
     // Удалим все элементы
     ui->treeWidget->clear();
     this->subjects.clear();
+    delete curriculum;
 }
 
 //converts QString to std::wstring
@@ -27,13 +28,13 @@ void MainWindow::clearAllEdits(){
     ui->subjectTitle->clear();
     ui->teacherName->clear();
     ui->lectureHours1->clear();
-    ui->lectureHours1->clear();
+    ui->lectureHours2->clear();
     ui->labWorkHours1->clear();
-    ui->labWorkHours1->clear();
+    ui->labWorkHours2->clear();
     ui->practiceHours1->clear();
-    ui->practiceHours1->clear();
+    ui->practiceHours2->clear();
     ui->independentWorkHours1->clear();
-    ui->independentWorkHours1->clear();
+    ui->independentWorkHours2->clear();
     ui->exam1->setChecked(false);
     ui->exam2->setChecked(false);
     ui->test1->setChecked(false);
@@ -45,58 +46,69 @@ void MainWindow::clearAllEdits(){
 }
 
 void MainWindow::addSubjectsToTree(int year){
-    //TODO Номер для дисциплин - может столбцы заюзать?
-    //TODO fix булевые комп аудитории и тд
+    //TODO спросить у маши как так - зачет на 2 семестре, а знаятия на 3ем.
+    //TODO после того как курс отредактировали - выбранные предметы из числа по выбору - добавляются просто в subjects
+    //TODO а у факультативов удаляются все кроме выбранных (если не выбран не один- удалить это цикл)
 
-    //TODO еще одно под меню для дисциплин по выбору
-    // может сделать так чтобы в таблице хранилась ссылка на дисциплину которую какраз можно модифицировать? в 1ом столбце?
-   // можно сделать массив указателей на эти элементы. И давать в другой столбец id в этом массиве.
-    //Отправить абатурову наверно.
-    //TODO добавить возможность редактирования свойств предметов
-
-    for(std::vector<Cycle>::iterator it = curriculum->cycles.begin(); it!= curriculum->cycles.end(); ++it){
+    for(std::vector<Cycle>::iterator cyclesIt = curriculum->cycles.begin(); cyclesIt!= curriculum->cycles.end(); ++cyclesIt){
         QTreeWidgetItem *cycle = new QTreeWidgetItem(ui->treeWidget);
-        QString cycleName = QString::fromStdWString(it->name.shortName) + " - " +
-                QString::fromStdWString(it->name.fullName);
+        QString cycleName = QString::fromStdWString(cyclesIt->name.shortName) + " - " +
+                QString::fromStdWString(cyclesIt->name.fullName);
         cycle->setText(0, cycleName);
 
         // Добавим обязательные дисциплины
-        for(size_t i = 0; i < it->subjects.size(); ++i){
+        for(size_t i = 0; i < cyclesIt->subjects.size(); ++i){
             QTreeWidgetItem *subject = new QTreeWidgetItem(cycle);
-            subject->setText(0, QString::fromStdWString(it->subjects[i].titleNumber) + " " +
-                             QString::fromStdWString(it->subjects[i].title));
+            subject->setText(0, QString::fromStdWString(cyclesIt->subjects[i].titleNumber) + " " +
+                             QString::fromStdWString(cyclesIt->subjects[i].title));
             // добавим указатель на этот элемент в вектор, а id сохраним во втором столбце (для редактирования)
-            this->subjects.push_back(&(it->subjects.at(i)));
+            this->subjects.push_back(&(cyclesIt->subjects.at(i)));
             int subjectId = this->subjects.size() - 1;
             subject->setText(1, QString::number(subjectId));
 
-            if(it->name.shortName == L"ФТД") // Факультативы
+            if(cyclesIt->name.shortName == L"ФТД") // Факультативы
                 subject->setCheckState(0, Qt::Unchecked);
             cycle->addChild(subject);
         }
 
-        // Добавим дисциплины по выбору, если такие есть
-        if(!it->subSubjects.empty()){
-            QTreeWidgetItem *subSubjects = new QTreeWidgetItem(cycle);
-            subSubjects->setText(0, QString::fromUtf8("Дисциплины по выбору"));
-            for(size_t i = 0; i < it->subSubjects.size(); ++i){
-                QTreeWidgetItem *subSubject = new QTreeWidgetItem(subSubjects);
-                subSubject->setText(0, QString::fromStdWString(it->subSubjects[i].titleNumber) + " " +
-                                 QString::fromStdWString(it->subSubjects[i].title));
-                // добавим указатель на этот элемент в вектор, а id сохраним во втором столбце (для редактирования)
-                this->subjects.push_back(&(it->subSubjects.at(i)));
-                int subjectId = this->subjects.size() - 1;
-                subSubject->setText(1, QString::number(subjectId));
 
-                subSubject->setCheckState(0, Qt::Unchecked);
-                subSubjects->addChild(subSubject);
+        // Добавим дисциплины по выбору, если такие есть
+        if(!cyclesIt->subSubjectsEmpty()){
+            std::vector<SubSubjects>::iterator subSubjectsIt = cyclesIt->subSubjects.begin();
+            for(; subSubjectsIt!= cyclesIt->subSubjects.end(); ++subSubjectsIt){
+                // Выведем название этой группы дисциплин по выбору
+                QTreeWidgetItem *subSubjects = new QTreeWidgetItem(cycle);
+                subSubjects->setText(0, QString::fromStdWString(subSubjectsIt->subjectsNumber));
+
+                // Выведем первую дисциплину по выбору
+                QTreeWidgetItem *subSubject1 = new QTreeWidgetItem(subSubjects);
+                subSubject1->setText(0, QString::fromStdWString(subSubjectsIt->subjects[0].title));
+                subSubject1->setCheckState(0, Qt::Unchecked);
+
+                // добавим указатель на этот элемент в вектор, а id сохраним во втором столбце (для редактирования)
+                this->subjects.push_back(&(subSubjectsIt->subjects.at(0)));
+                int subjectId = this->subjects.size() - 1;
+                subSubject1->setText(1, QString::number(subjectId));
+
+                // Выведем вторую дисциплину по выбору
+                QTreeWidgetItem *subSubject2 = new QTreeWidgetItem(subSubjects);
+                subSubject2->setText(0, QString::fromStdWString(subSubjectsIt->subjects[1].title));
+                subSubject2->setCheckState(0, Qt::Unchecked);
+
+                // добавим указатель на этот элемент в вектор, а id сохраним во втором столбце (для редактирования)
+                this->subjects.push_back(&(subSubjectsIt->subjects.at(1)));
+                subjectId = this->subjects.size() - 1;
+                subSubject2->setText(1, QString::number(subjectId));
+
             }
         }
     }
+}
+
     // TODO не забыть сделать ui->treeWidget->clear(); при переходе на другой этап
 
     //TODO нарисовать архитектуру для диплома (и нада будет описать наверно)
-}
+
 
 // Для того чтобы была возможность редактировать - при добавлении элементов в treeWidget
 // я также добавляю сыылки на них в контейнер, чтобы просто обращаться по id загруженного предмета

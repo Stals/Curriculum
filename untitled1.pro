@@ -23,6 +23,7 @@ HEADERS  += mainwindow.h \
     curriculumfile.h \
     curriculum.h \
     subject.h \
-    cycle.h
+    cycle.h \
+    subsubjects.h
 
 FORMS    += mainwindow.ui
