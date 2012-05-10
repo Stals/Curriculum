@@ -37,6 +37,15 @@ int CurriculumFile::getCellInt(int sheetNum, int row, int col){
     return cellInt;
 }
 
+double CurriculumFile::getCellDouble(int sheetNum, int row, int col){
+    BasicExcelWorksheet* selectedSheet = (sheetNum == 0)? sheet0 : sheet1;
+    BasicExcelCell* cell = selectedSheet->Cell(row, col);
+    double cellDouble = cell->GetDouble();
+    return cellDouble;
+}
+
+
+
 bool CurriculumFile::isEmpty(int sheetNum, int row, int col){
     bool isEmpty = (getCellWString(sheetNum, row, col).empty() && (getCellInt(sheetNum, row, col) == 0) );
     if(isEmpty)

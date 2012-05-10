@@ -31,6 +31,7 @@ public:
     // row - строка
     // col - столбец
 	int getCellInt(int sheetNum, int row, int col);
+    double getCellDouble(int sheetNum, int row, int col);
     bool isEmpty(int sheetNum, int row,int col);
     int getTotalRows(int sheetNum);
     size_t getStringLength(int sheetNum, int row, int col);

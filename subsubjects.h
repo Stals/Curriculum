@@ -17,8 +17,8 @@ struct SubSubjects{
     SubSubjects(std::wstring subjectsNumber, std::pair<double, double> percents):
         choice(0), lecturePercent(0), independentWorkPercent(0){
         this->subjectsNumber = subjectsNumber;
-        lecturePercent = percents.first;
-        independentWorkPercent = percents.second;
+        lecturePercent = percents.first*100;
+        independentWorkPercent = percents.second*100;
     }
 
     bool isEmpty(){

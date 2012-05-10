@@ -136,10 +136,10 @@ Subject Curriculum::getSubject(int row, std::wstring titleNumber){
  }
 
 std::pair<double, double> Curriculum::getSubSubjectPercent(int row){
-//    std::pair <double, double> percents;
-//    percents.first = xls.getDouble(1, );
-
-//    return percents;
+    std::pair <double, double> percents;
+    percents.first = xls.getCellDouble(1, row, 7);
+    percents.second = xls.getCellDouble(1, row, 8);
+    return percents;
 }
 
 // Возвращает RowType в зависимости от того чем является строка
