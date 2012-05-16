@@ -1,13 +1,56 @@
+#include <QString>
+
 #include "curriculum.h"
+
 
 Curriculum::Curriculum(int year, wchar_t* filename): xls(filename){
 	this->year = year;
+    // Загрузим график учебного процесса для этого курса
+    loadCurriculumSchedule();
 	// Заполняем subjects содержимым xls
+    //TODO ASAP - если есть запись в базе - загрузить из неё
     loadCurriculumSubjects();
     //удалим пустые группы дисциплин по выбору
     removeEmptySubSubjects();
     // удалим пустые циклы
     removeEmptyCycles();
+}
+
+// Принцип:
+// Пустая ячейка - Теоретическое обучение
+// Э - Экзаменационные сессии
+// У - Учебная практика
+// П - Другие практики
+// Д - Дипломная работа или проекты
+// Г - Государственные экзамены
+// К - Каникулы
+// А - Итоговая аттестация
+void Curriculum::loadCurriculumSchedule(){
+    //Определеим строку ниже которой начинается график для первого курса
+    const int startRow = 17;
+    const int startCol = 2;
+    //Изменим номер строки в зависимости от курса
+    int row = startRow + year*2;
+
+    for(int col = startCol; col <= (52 + startCol); ++ col){
+        std::wstring weekType = xls.getCellWString(0, row, col);
+        if(weekType == L"Э")
+            schedule.weekTypes.push_back(WeekType::exam);
+        else if(weekType == L"У")
+            schedule.weekTypes.push_back(WeekType::educationalPractice);
+        else if(weekType == L"П")
+            schedule.weekTypes.push_back(WeekType::otherPractice);
+        else if(weekType == L"Д")
+            schedule.weekTypes.push_back(WeekType::diplomaWork);
+        else if(weekType == L"Г")
+            schedule.weekTypes.push_back(WeekType::stateExam);
+        else if(weekType == L"К")
+            schedule.weekTypes.push_back(WeekType::holiday);
+        else if(weekType == L"А")
+            schedule.weekTypes.push_back(WeekType::finalExam);
+        else
+            schedule.weekTypes.push_back(WeekType::theoretical);
+    }
 }
 
 //Загружает дисциплины из учебного плана "Лист 2"

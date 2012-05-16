@@ -27,6 +27,7 @@ std::wstring MainWindow::qs2ws(const QString& str){
 void MainWindow::clearAllEdits(){
     ui->subjectTitle->clear();
     ui->teacherName->clear();
+    ui->laboriousness->clear();
     ui->lectureHours1->clear();
     ui->lectureHours2->clear();
     ui->labWorkHours1->clear();
@@ -177,6 +178,7 @@ void MainWindow::on_treeWidget_itemClicked(QTreeWidgetItem *item, int column)
     ui->subjectTitle->setText(QString::fromStdWString(subject->title));
     ui->subjectTitle->home(false); // чтобы название предмета было видно с начала, если оно длинное
     ui->teacherName->setText(QString::fromStdWString(subject->teacherName));
+    ui->laboriousness->setText(QString::number(subject->laboriousness));
     ui->computerClassNecessary->setChecked(subject->computerClassNecessary);
     ui->projectorNecessary->setChecked(subject->projectorNecessary);
 
@@ -211,8 +213,9 @@ void MainWindow::on_pushButton_2_clicked()
     //Сохраним общую информацию
     subject->title = qs2ws(ui->subjectTitle->text());
     subject->teacherName = qs2ws(ui->teacherName->text());
+    subject->laboriousness = ui->laboriousness->text().toInt();
     subject->computerClassNecessary = ui->computerClassNecessary->isChecked();
-    subject->projectorNecessary = ui->computerClassNecessary->isChecked();
+    subject->projectorNecessary = ui->projectorNecessary->isChecked();
 
     //Сохраним изменения для первого семестра
     subject->firstSemester.lectureHours = ui->lectureHours1->text().toInt();

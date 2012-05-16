@@ -52,6 +52,7 @@ struct Subject{
 	bool computerClassNecessary; // необходима ли компьютерная аудитория
 	bool projectorNecessary; // необходим ли проектор 
     std::wstring teacherName; // or mb id ?
+    int laboriousness; // трудоемкость дисциплины
 
     // Возвращает true если ни в одном из семестров (на этом курсе) эта дисциплина не проводится
     bool isEmpty(){

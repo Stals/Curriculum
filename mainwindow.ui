@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>824</width>
-    <height>533</height>
+    <height>559</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -71,6 +71,16 @@
               </property>
              </widget>
             </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label">
+             <property name="text">
+              <string>Трудоемкость дисциплины</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="laboriousness"/>
            </item>
            <item>
             <widget class="QGroupBox" name="semester1">
@@ -211,6 +221,16 @@
              </widget>
              <widget class="QLineEdit" name="teacherName"/>
             </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_2">
+             <property name="text">
+              <string>если еще что-то нужно будет</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="lineEdit_2"/>
            </item>
            <item>
             <widget class="QGroupBox" name="semester2">
