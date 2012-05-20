@@ -54,6 +54,7 @@ struct Subject{
     std::wstring teacherName; // or mb id ?
     int laboriousness; // трудоемкость дисциплины
 
+    Subject():laboriousness(0){}
     // Возвращает true если ни в одном из семестров (на этом курсе) эта дисциплина не проводится
     bool isEmpty(){
         if(firstSemester.isEmpty() && secondSemester.isEmpty())
