@@ -15,7 +15,8 @@ SOURCES += main.cpp\
     ExcelFormat.cpp \
     BasicExcel.cpp \
     curriculumfile.cpp \
-    curriculum.cpp
+    curriculum.cpp \
+    curriculumdb.cpp
 
 HEADERS  += mainwindow.h \
     ExcelFormat.h \
@@ -25,6 +26,7 @@ HEADERS  += mainwindow.h \
     subject.h \
     cycle.h \
     subsubjects.h \
-    schedule.h
+    schedule.h \
+    curriculumdb.h
 
 FORMS    += mainwindow.ui

@@ -1,23 +1,40 @@
-#include <QString>
-
 #include "curriculum.h"
 
-
-Curriculum::Curriculum(int year, wchar_t* filename): xls(filename){
+Curriculum::Curriculum(int year, std::wstring filename){
     this->year = year;
-    // Загрузим график учебного процесса для этого курса
-    loadCurriculumSchedule();
-	// Заполняем subjects содержимым xls
-    //TODO ASAP - если есть запись в базе - загрузить из неё
-    loadCurriculumSubjects();
+    this->filename = filename;
 
+    if(!filename.empty()){
+        /* Загрузим учебный план из Excel файла */
+        xls = new CurriculumFile(const_cast<wchar_t*>( filename.c_str() ));
+        // Загрузим график учебного процесса для этого курса
+        loadScheduleFromFile();
+        // Заполняем subjects содержимым xls
+        loadSubjectsFromFile();
+    } else {
+        /* Загрузим учебный план из базы */
+        db = new CurriculumDB;
+        // Загрузим график учебного процесса для этого курса
+        loadScheduleFromDB();
+        // Заполняем subjects содержимым Базы
+        loadSubjectsFromDB();
+    }
 
-
-    //удалим пустые группы дисциплин по выбору
-    removeEmptySubSubjects();
-    // удалим пустые циклы
-    removeEmptyCycles();
+        // TODO mb - это нужно только если загружать из файла?
+        //удалим пустые группы дисциплин по выбору
+        removeEmptySubSubjects();
+        // удалим пустые циклы
+        removeEmptyCycles();
 }
+
+Curriculum::~Curriculum(){
+    // Удалим тот класс с помощью когорого загружали учебный план
+    if(filename.empty())
+        delete db;
+    else
+        delete xls;
+}
+
 
 // Принцип:
 // Пустая ячейка - Теоретическое обучение
@@ -28,7 +45,7 @@ Curriculum::Curriculum(int year, wchar_t* filename): xls(filename){
 // Г - Государственные экзамены
 // К - Каникулы
 // А - Итоговая аттестация
-void Curriculum::loadCurriculumSchedule(){
+void Curriculum::loadScheduleFromFile(){
     //Определеим строку ниже которой начинается график для первого курса
     const int startRow = 17;
     const int startCol = 2;
@@ -36,10 +53,10 @@ void Curriculum::loadCurriculumSchedule(){
     int row = startRow + year*2;
 
     for(int col = startCol; col <= (52 + startCol); ++ col){
-        if(xls.isEmpty(0, row, col))
+        if(xls->isEmpty(0, row, col))
             schedule.weekTypes.push_back(WeekType::theoretical);
         else{
-            std::wstring weekType = xls.getCellWString(0, row, col);
+            std::wstring weekType = xls->getCellWString(0, row, col);
             if(weekType == L"Э")
                 schedule.weekTypes.push_back(WeekType::exam);
             else if(weekType == L"У")
@@ -61,13 +78,13 @@ void Curriculum::loadCurriculumSchedule(){
 }
 
 //Загружает дисциплины из учебного плана "Лист 2"
-void Curriculum::loadCurriculumSubjects(){
+void Curriculum::loadSubjectsFromFile(){
     CycleName currentCycleName; // имя текущего цикла
     std::wstring currentSubSubjectNumber; // номер текущих дисциплин по выбору
 	
     // Для каждой строки в файле - определим какой тип она имеет и выполним соответствующие дейстия
     int startFrom = 2; // Чтобы строка "|№|Название дисциплины|" - не считалась дисциплиной
-    for(int row = startFrom; row < xls.getTotalRows(1); ++row){
+    for(int row = startFrom; row < xls->getTotalRows(1); ++row){
 
         RowType::Value rowType = getRowType(row);
         switch ( rowType ) {
@@ -124,15 +141,15 @@ Subject Curriculum::getSubject(int row, std::wstring titleNumber){
 
     if(titleNumber.empty())
         // значит это не дополнительная дисциплина - получаем номер из файла
-        subject.titleNumber =  xls.getCellWString(1, row, 0);
+        subject.titleNumber =  xls->getCellWString(1, row, 0);
     else
         // это дополнительная дисциплина - получим номер из titleNumber
         subject.titleNumber = titleNumber;     
     
-    subject.title = xls.getCellWString(1, row, 1);    
-    subject.totalHours = xls.getCellInt(1,row, 5);
-    subject.totalAcademicHours = xls.getCellInt(1,row, 7);
-    subject.totalIndependentWorkHours = xls.getCellInt(1,row, 8);
+    subject.title = xls->getCellWString(1, row, 1);
+    subject.totalHours = xls->getCellInt(1,row, 5);
+    subject.totalAcademicHours = xls->getCellInt(1,row, 7);
+    subject.totalIndependentWorkHours = xls->getCellInt(1,row, 8);
     
 
     // firstCol - Номер первого столбца для этого курса, 
@@ -140,25 +157,25 @@ Subject Curriculum::getSubject(int row, std::wstring titleNumber){
     int firstCol = 9 + 8 * (year - 1);
 
     // Получим кол-во часов
-    subject.firstSemester.lectureHours =          xls.isEmpty(1, row, firstCol) ? 0 : xls.getCellInt(1, row, firstCol);
-    subject.firstSemester.labWorkHours =          xls.isEmpty(1, row, ++firstCol) ? 0 : xls.getCellInt(1, row, firstCol);
-    subject.firstSemester.practiceHours =         xls.isEmpty(1, row, ++firstCol) ? 0 : xls.getCellInt(1, row, firstCol);
-    subject.firstSemester.independentWorkHours =  xls.isEmpty(1, row, ++firstCol) ? 0 : xls.getCellInt(1, row, firstCol);
+    subject.firstSemester.lectureHours =          xls->isEmpty(1, row, firstCol) ? 0 : xls->getCellInt(1, row, firstCol);
+    subject.firstSemester.labWorkHours =          xls->isEmpty(1, row, ++firstCol) ? 0 : xls->getCellInt(1, row, firstCol);
+    subject.firstSemester.practiceHours =         xls->isEmpty(1, row, ++firstCol) ? 0 : xls->getCellInt(1, row, firstCol);
+    subject.firstSemester.independentWorkHours =  xls->isEmpty(1, row, ++firstCol) ? 0 : xls->getCellInt(1, row, firstCol);
 
-    subject.secondSemester.lectureHours =         xls.isEmpty(1, row, ++firstCol) ? 0 : xls.getCellInt(1, row, firstCol);
-    subject.secondSemester.labWorkHours =         xls.isEmpty(1, row, ++firstCol) ? 0 : xls.getCellInt(1, row, firstCol);
-    subject.secondSemester.practiceHours =        xls.isEmpty(1, row, ++firstCol) ? 0 : xls.getCellInt(1, row, firstCol);
-    subject.secondSemester.independentWorkHours = xls.isEmpty(1, row, ++firstCol) ? 0 : xls.getCellInt(1, row, firstCol);
+    subject.secondSemester.lectureHours =         xls->isEmpty(1, row, ++firstCol) ? 0 : xls->getCellInt(1, row, firstCol);
+    subject.secondSemester.labWorkHours =         xls->isEmpty(1, row, ++firstCol) ? 0 : xls->getCellInt(1, row, firstCol);
+    subject.secondSemester.practiceHours =        xls->isEmpty(1, row, ++firstCol) ? 0 : xls->getCellInt(1, row, firstCol);
+    subject.secondSemester.independentWorkHours = xls->isEmpty(1, row, ++firstCol) ? 0 : xls->getCellInt(1, row, firstCol);
 
     // Получим информацию о наличии итоговой аттестации
     // Если номер семестра входит в список семестров - значит аттестация на этом семестре по этому предмету присутствует
-    subject.firstSemester.exam =        isSemesterInList(year, 1, xls.getCellStdString(1,row, 2));
-    subject.firstSemester.test =        isSemesterInList(year, 1, xls.getCellStdString(1,row, 3));
-    subject.firstSemester.yearWork =    isSemesterInList(year, 1, xls.getCellStdString(1,row, 4));
+    subject.firstSemester.exam =        isSemesterInList(year, 1, xls->getCellStdString(1,row, 2));
+    subject.firstSemester.test =        isSemesterInList(year, 1, xls->getCellStdString(1,row, 3));
+    subject.firstSemester.yearWork =    isSemesterInList(year, 1, xls->getCellStdString(1,row, 4));
 
-    subject.secondSemester.exam =       isSemesterInList(year, 2, xls.getCellStdString(1,row, 2));
-    subject.secondSemester.test =       isSemesterInList(year, 2, xls.getCellStdString(1,row, 3));
-    subject.secondSemester.yearWork =   isSemesterInList(year, 2, xls.getCellStdString(1,row, 4));
+    subject.secondSemester.exam =       isSemesterInList(year, 2, xls->getCellStdString(1,row, 2));
+    subject.secondSemester.test =       isSemesterInList(year, 2, xls->getCellStdString(1,row, 3));
+    subject.secondSemester.yearWork =   isSemesterInList(year, 2, xls->getCellStdString(1,row, 4));
 
     return subject;
 }
@@ -169,13 +186,13 @@ Subject Curriculum::getSubject(int row, std::wstring titleNumber){
 
  CycleName Curriculum::getCycleName(int row){
     CycleName cycleName;
-    cycleName.shortName = xls.getCellWString(1, row, 1);
-    cycleName.fullName = xls.getCellWString(1, row, 2);
+    cycleName.shortName = xls->getCellWString(1, row, 1);
+    cycleName.fullName = xls->getCellWString(1, row, 2);
     return cycleName;
  }
 
  std::wstring Curriculum::getSubSubjectNumber(int row){
-    std::wstring str = xls.getCellWString(1, row, 1);
+    std::wstring str = xls->getCellWString(1, row, 1);
     std::wstring::iterator it = str.begin();
     for(; it!= str.end(); ++it){
         if((*it) == L' ')
@@ -187,8 +204,8 @@ Subject Curriculum::getSubject(int row, std::wstring titleNumber){
 
 std::pair<double, double> Curriculum::getSubSubjectPercent(int row){
     std::pair <double, double> percents;
-    percents.first = xls.getCellDouble(1, row, 7);
-    percents.second = xls.getCellDouble(1, row, 8);
+    percents.first = xls->getCellDouble(1, row, 7);
+    percents.second = xls->getCellDouble(1, row, 8);
     return percents;
 }
 
@@ -203,21 +220,21 @@ std::pair<double, double> Curriculum::getSubSubjectPercent(int row){
     Иначе на этой строке нет того что мы ищем не то что мы ищем
 */
 Curriculum::RowType::Value Curriculum::getRowType(int row){
-    if(!xls.isEmpty(1, row, 1)){
+    if(!xls->isEmpty(1, row, 1)){
 
-        if(xls.getCellInt(1, row, 0)) // Значит это цикл предметов
+        if(xls->getCellInt(1, row, 0)) // Значит это цикл предметов
             return RowType::cycle;
 
-        else if(xls.isEmpty(1, row, 0) &&
-                xls.isEmpty(1, row, 2) &&
-                xls.isEmpty(1, row, 8))
+        else if(xls->isEmpty(1, row, 0) &&
+                xls->isEmpty(1, row, 2) &&
+                xls->isEmpty(1, row, 8))
             return RowType::subSubjectNumber;
 
-        else if(xls.getCellWString(1, row, 0).empty() &&
-               (!xls.getCellStdString(1, row, 0).empty()))// Значит это дисциплина по выбору
+        else if(xls->getCellWString(1, row, 0).empty() &&
+               (!xls->getCellStdString(1, row, 0).empty()))// Значит это дисциплина по выбору
             return RowType::subSubject;
 
-        else if((xls.getCellInt(1, row, 0) == 0) && !xls.isEmpty(1, row, 0)) //Значит предмет
+        else if((xls->getCellInt(1, row, 0) == 0) && !xls->isEmpty(1, row, 0)) //Значит предмет
             return RowType::subject;
     }
     return RowType::unknown;
@@ -243,14 +260,23 @@ bool Curriculum::isSemesterInList(int year, int semesterNum, std::string listOfS
 
 }
 
+void Curriculum::loadScheduleFromDB(){
+
+}
+
+
+void Curriculum::loadSubjectsFromDB(){
+
+}
+
 void Curriculum::removeEmptySubSubjects(){
-for(std::vector<Cycle>::iterator cycle = cycles.begin(); cycle != cycles.end(); ++cycle){
-    std::vector<SubSubjects>::iterator subSubjects = cycle->subSubjects.begin();
-    while(subSubjects != cycle->subSubjects.end()){
-        if(subSubjects->isEmpty())
-                subSubjects = cycle->subSubjects.erase(subSubjects);
-            else
-                ++ subSubjects;
+    for(std::vector<Cycle>::iterator cycle = cycles.begin(); cycle != cycles.end(); ++cycle){
+        std::vector<SubSubjects>::iterator subSubjects = cycle->subSubjects.begin();
+        while(subSubjects != cycle->subSubjects.end()){
+            if(subSubjects->isEmpty())
+                    subSubjects = cycle->subSubjects.erase(subSubjects);
+                else
+                    ++ subSubjects;
         }
     }
 }

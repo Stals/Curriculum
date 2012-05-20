@@ -9,6 +9,7 @@
 #include <utility>
 
 #include "curriculumfile.h"
+#include "curriculumdb.h"
 #include "schedule.h"
 #include "cycle.h"
 #include "subject.h"
@@ -16,7 +17,8 @@
 
 class Curriculum{ //TODO ASAP - если я храню только для одного курса- сюда нужно передавать № курса для которого будут доставаться предметы.
 public:
-	Curriculum(int year, wchar_t* filename);
+    Curriculum(int year, std::wstring filename = L"");
+    ~Curriculum();
 
     // Хранит график учебного процесса этого курса
     Schedule schedule;
@@ -34,16 +36,22 @@ private:
     };
 
     int year; // № курса
-	CurriculumFile xls; // TODO! освобождать память после того как получу список дисциплин со второго листа и то что нужно с первого (создавать его через new и потом вызвать delete)
+    std::wstring filename; // имя файла хранящего учебный план
+    CurriculumFile* xls; // TODO! освобождать память после того как получу список дисциплин со второго листа и то что нужно с первого (создавать его через new и потом вызвать delete)
+    CurriculumDB* db;
 
 	// TODO Question - Хранить сразу для всех курсов или только для 1ого? - мне кажется для 1ого хранить понятнее (и не будет путаницы)
 	// TODO Question - как хранить subjects? можно сделать map с ключами - циклами, а value - 2 контейнера (для обязательных и дополнительных дисциплин)
 
     //Загружает график учебного процесса из учебного плана "Лист 1"
-    void loadCurriculumSchedule();
-
+    void loadScheduleFromFile();
     //Загружает дисциплины из учебного плана "Лист 2"
-	void loadCurriculumSubjects();
+    void loadSubjectsFromFile();
+
+    // Загружает график учебного процесса из базы
+    void loadScheduleFromDB();
+    // Загружает дисциплины из базы
+    void loadSubjectsFromDB();
 
 	// Возращет предмет со строки row
 	// При добавлении дисциплины по выбору нужно передать её номер 
