@@ -429,7 +429,7 @@
     <item row="2" column="0">
      <widget class="QPushButton" name="pushButton">
       <property name="text">
-       <string>Получить список дисциплин для выбранного курса</string>
+       <string>Открыть учебный план для этого курса</string>
       </property>
      </widget>
     </item>

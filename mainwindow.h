@@ -34,6 +34,7 @@ private slots:
 private:
     Ui::MainWindow *ui;
     bool firstTime;
+    QString filename;
     Curriculum *curriculum;
     std::vector<Subject *> subjects;
 };

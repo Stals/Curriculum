@@ -1,3 +1,5 @@
+#include <QFileDialog>
+
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
@@ -127,6 +129,10 @@ void MainWindow::addSubjectsToTree(int year){
 
 void MainWindow::on_pushButton_clicked()
 {
+    // TODO если treewidget не пустой, сохранить все в базу.
+
+    // TODO если в базе есть что-то загружать оттуда иначе дать выбор файла.
+
     ui->treeWidget->clear();
     this->subjects.clear();
     clearAllEdits();
@@ -150,9 +156,12 @@ void MainWindow::on_pushButton_clicked()
     }
 
 
+    filename = QFileDialog::getOpenFileName(this,
+        tr("Open Curriculum"), "", tr("Excel Files (*.xls *.xlsx)"));
+
     if(!firstTime)
         delete curriculum;
-    curriculum = new Curriculum(year, L"название.xls");
+    curriculum = new Curriculum(year, filename.toStdWString());
     addSubjectsToTree(year);
 }
 
