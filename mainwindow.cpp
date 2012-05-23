@@ -28,6 +28,7 @@ void MainWindow::clearAllEdits(){
     ui->subjectTitle->clear();
     ui->teacherName->clear();
     ui->laboriousness->clear();
+    ui->totalHours->clear();
     ui->lectureHours1->clear();
     ui->lectureHours2->clear();
     ui->labWorkHours1->clear();
@@ -179,6 +180,7 @@ void MainWindow::on_treeWidget_itemClicked(QTreeWidgetItem *item, int column)
     ui->subjectTitle->home(false); // чтобы название предмета было видно с начала, если оно длинное
     ui->teacherName->setText(QString::fromStdWString(subject->teacherName));
     ui->laboriousness->setText(QString::number(subject->laboriousness));
+    ui->totalHours->setText(QString::number(subject->totalHours));
     ui->computerClassNecessary->setChecked(subject->computerClassNecessary);
     ui->projectorNecessary->setChecked(subject->projectorNecessary);
 
@@ -214,6 +216,7 @@ void MainWindow::on_pushButton_2_clicked()
     subject->title = qs2ws(ui->subjectTitle->text());
     subject->teacherName = qs2ws(ui->teacherName->text());
     subject->laboriousness = ui->laboriousness->text().toInt();
+    subject->totalHours = ui->totalHours->text().toInt();
     subject->computerClassNecessary = ui->computerClassNecessary->isChecked();
     subject->projectorNecessary = ui->projectorNecessary->isChecked();
 

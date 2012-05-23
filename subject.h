@@ -9,7 +9,7 @@ struct Semester{
 	int lectureHours; // кол-во часов лекций
 	int labWorkHours; // кол-во часов лабораторных работ
 	int practiceHours; // кол-во часов практики
-	int independentWorkHours; // кол-во часов контролируемой самомтоятельной работы
+	int independentWorkHours; // кол-во часов контролируемой самостоятельной работы
 	
 	// наличие итоговой аттестации
 	bool test; // наличие зачета
@@ -54,7 +54,7 @@ struct Subject{
     std::wstring teacherName; // or mb id ?
     int laboriousness; // трудоемкость дисциплины
 
-    Subject():laboriousness(0){}
+    Subject():laboriousness(0), computerClassNecessary(false), projectorNecessary(false){}
     // Возвращает true если ни в одном из семестров (на этом курсе) эта дисциплина не проводится
     bool isEmpty(){
         if(firstSemester.isEmpty() && secondSemester.isEmpty())

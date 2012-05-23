@@ -7,11 +7,11 @@
     <x>0</x>
     <y>0</y>
     <width>824</width>
-    <height>559</height>
+    <height>604</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Загрузка учебного плана</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout_4">
@@ -216,7 +216,7 @@
              </property>
              <widget class="QLabel" name="label_3">
               <property name="text">
-               <string>Имя Преподавателя</string>
+               <string>Фамилия Преподавателя</string>
               </property>
              </widget>
              <widget class="QLineEdit" name="teacherName"/>
@@ -225,12 +225,12 @@
            <item>
             <widget class="QLabel" name="label_2">
              <property name="text">
-              <string>если еще что-то нужно будет</string>
+              <string>Всего часов</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QLineEdit" name="lineEdit_2"/>
+            <widget class="QLineEdit" name="totalHours"/>
            </item>
            <item>
             <widget class="QGroupBox" name="semester2">
