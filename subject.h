@@ -54,6 +54,12 @@ struct Subject{
     std::wstring teacherName; // or mb id ?
     int laboriousness; // трудоемкость дисциплины
 
+
+    /*Информация получаемая после того как расписание было составлено */
+    // Дата
+    // Время (утро / вечер)
+    // # аудитории
+
     Subject():laboriousness(0), computerClassNecessary(false), projectorNecessary(false){}
     // Возвращает true если ни в одном из семестров (на этом курсе) эта дисциплина не проводится
     bool isEmpty(){
